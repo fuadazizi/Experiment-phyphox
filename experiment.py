@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # import and read excel file
 dfAccel = pd.read_excel('experiment.xlsx', sheet_name='Accelerometer')
@@ -19,13 +20,16 @@ for i in dfAccel.index:
 	dataaccel.append(data)
 
 # Gyroscope part
+# I want to use deg/s unit instead rad/s
+# so I convert rad/s unit to deg/s unit
 for i in dfGyro.index:
 	data = {}
 	data['Time'] = dfGyro['Time (s)'][i]
-	data['x'] = dfGyro['Gyroscope x (rad/s)'][i]
-	data['y'] = dfGyro['Gyroscope y (rad/s)'][i]
-	data['z'] = dfGyro['Gyroscope z (rad/s)'][i]
+	data['x'] = dfGyro['Gyroscope x (rad/s)'][i] * 57.2958
+	data['y'] = dfGyro['Gyroscope y (rad/s)'][i] * 57.2958
+	data['z'] = dfGyro['Gyroscope z (rad/s)'][i] * 57.2958
 	datagyro.append(data)
 
-print(dataaccel)
-print(datagyro)
+#print(dataaccel)
+#print(datagyro)
+
