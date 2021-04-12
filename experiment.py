@@ -36,7 +36,7 @@ plotX = []
 plotY = []
 plotZ = []
 time = []
-'''
+
 for data in dataAccel:
 	plotX.append(data['x'])
 	plotY.append(data['y'])
@@ -51,7 +51,7 @@ plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Accelerometer (m/s^2)')
 plt.show()
-'''
+
 # plot Gyroscope
 plotX = []
 plotY = []
@@ -66,9 +66,9 @@ for data in dataGyro:
 
 plt.title('Plot Gyroscope')
 #plt.subplot(2,1,2)
-#plt.plot(time, plotX, label = "X", linewidth=0.7, color = 'red')
+plt.plot(time, plotX, label = "X", linewidth=0.7, color = 'red')
 plt.plot(time, plotY, label = "Y", linewidth=0.7, color = 'green')
-#plt.plot(time, plotZ, label = "Z", linewidth=0.7, color = 'blue')
+plt.plot(time, plotZ, label = "Z", linewidth=0.7, color = 'blue')
 plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Gyroscope (deg/s)')
@@ -99,3 +99,27 @@ plt.ylabel('Accelerometer angle (degree)')
 plt.show()
 
 #print(newAccel)
+
+# Now to get angle of gyroscope, we need to integral the gyroscope data
+
+newGyro = []
+timeGyro = []
+plotX = []
+plotY = []
+plotZ = []
+dt = dataGyro[1]['t'] - dataGyro[0]['t']
+for data in dataGyro:
+	plotX.append(data['x']*dt)
+	plotY.append(data['y']*dt)
+	plotZ.append(data['z']*dt)
+	timeGyro.append(data['t'])
+
+# plot the new Integral gyroscope data
+plt.title('Plot Gyroscope Angle')
+plt.plot(timeGyro, plotX, label = 'X', linewidth=0.7)
+plt.plot(timeGyro, plotY, label = 'Y',linewidth=0.7)
+plt.plot(timeGyro, plotZ, label = 'Z',linewidth=0.7)
+plt.legend()
+plt.xlabel('Time (s)')
+plt.ylabel('Gyroscope angle (degree)')
+plt.show()
