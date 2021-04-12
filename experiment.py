@@ -8,30 +8,44 @@ dfAccel = pd.read_excel('experiment.xlsx', sheet_name='Accelerometer')
 dfGyro = pd.read_excel('experiment.xlsx', sheet_name='Gyroscope')
 
 # variable for accelerometer and gyroscope data
-dataAccel = []
-dataGyro = []
+dataAccel = {}
+dataGyro = {}
 
 # save with dictionary
 # Accelerometer part
+time = []
+dataX = []
+dataY = []
+dataZ = []
 for i in dfAccel.index:
-	data = {}
-	data['t'] = dfAccel['Time (s)'][i]
-	data['x'] = dfAccel['Acceleration x (m/s^2)'][i]
-	data['y'] = dfAccel['Acceleration y (m/s^2)'][i]
-	data['z'] = dfAccel['Acceleration z (m/s^2)'][i]
-	dataAccel.append(data)
+	time.append(dfAccel['Time (s)'][i])
+	dataX.append(dfAccel['Acceleration x (m/s^2)'][i])
+	dataY.append(dfAccel['Acceleration y (m/s^2)'][i])
+	dataZ.append(dfAccel['Acceleration z (m/s^2)'][i])
+dataAccel['t'] = time
+dataAccel['x'] = dataX
+dataAccel['y'] = dataY
+dataAccel['z'] = dataZ
 
 # Gyroscope part
 # I want to use deg/s unit instead rad/s, so I convert rad/s unit to deg/s unit
+# with using math.degrees()
+time = []
+dataX = []
+dataY = []
+dataZ = []
 for i in dfGyro.index:
-	data = {}
-	data['t'] = dfGyro['Time (s)'][i]
-	data['x'] = math.degrees(dfGyro['Gyroscope x (rad/s)'][i])
-	data['y'] = math.degrees(dfGyro['Gyroscope y (rad/s)'][i])
-	data['z'] = math.degrees(dfGyro['Gyroscope z (rad/s)'][i])
-	dataGyro.append(data)
+	time.append(dfGyro['Time (s)'][i])
+	dataX.append(dfGyro['Gyroscope x (rad/s)'][i])
+	dataY.append(dfGyro['Gyroscope y (rad/s)'][i])
+	dataZ.append(dfGyro['Gyroscope z (rad/s)'][i])
+dataGyro['t'] = time
+dataGyro['x'] = dataX
+dataGyro['y'] = dataY
+dataGyro['z'] = dataZ
 
 # plot Accelerometer
+'''
 plotX = []
 plotY = []
 plotZ = []
@@ -42,17 +56,19 @@ for data in dataAccel:
 	plotY.append(data['y'])
 	plotZ.append(data['z'])
 	time.append(data['t'])
+'''
 plt.title('Plot Accelerometer')
 #plt.subplot(2,1,1)
-plt.plot(time, plotX, label = "X", linewidth=0.7, color = 'red')
-plt.plot(time, plotY, label = "Y", linewidth=0.7, color = 'green')
-plt.plot(time, plotZ, label = "Z", linewidth=0.7, color = 'blue')
+plt.plot(dataAccel['t'], dataAccel['x'], label = "X", linewidth=0.7, color = 'red')
+plt.plot(dataAccel['t'], dataAccel['y'], label = "Y", linewidth=0.7, color = 'green')
+plt.plot(dataAccel['t'], dataAccel['z'], label = "Z", linewidth=0.7, color = 'blue')
 plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Accelerometer (m/s^2)')
 plt.show()
 
 # plot Gyroscope
+'''
 plotX = []
 plotY = []
 plotZ = []
@@ -63,12 +79,12 @@ for data in dataGyro:
 	plotY.append(data['y'])
 	plotZ.append(data['z'])
 	time.append(data['t'])
-
+'''
 plt.title('Plot Gyroscope')
 #plt.subplot(2,1,2)
-plt.plot(time, plotX, label = "X", linewidth=0.7, color = 'red')
-plt.plot(time, plotY, label = "Y", linewidth=0.7, color = 'green')
-plt.plot(time, plotZ, label = "Z", linewidth=0.7, color = 'blue')
+plt.plot(dataGyro['t'], dataGyro['x'], label = "X", linewidth=0.7, color = 'red')
+plt.plot(dataGyro['t'], dataGyro['y'], label = "Y", linewidth=0.7, color = 'green')
+plt.plot(dataGyro['t'], dataGyro['z'], label = "Z", linewidth=0.7, color = 'blue')
 plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Gyroscope (deg/s)')
@@ -84,16 +100,16 @@ def arctan(x,y,z):
 
 newAccel = []
 timeAccel = []
-for data in dataAccel:
-	x = data['x']
-	y = data['y']
-	z = data['z']
+for i in range(len(dataAccel['t'])):
+	x = dataAccel['x'][i]
+	y = dataAccel['y'][i]
+	z = dataAccel['z'][i]
 	newAccel.append(arctan(x,y,z))
-	timeAccel.append(data['t'])
+	#timeAccel.append(data['t'])
 
 # plot the new Acceleration data
 plt.title('Plot Accelerometer Angle')
-plt.plot(timeAccel,newAccel,linewidth=0.7)
+plt.plot(dataAccel['t'],newAccel,linewidth=0.7)
 plt.xlabel('Time (s)')
 plt.ylabel('Accelerometer angle (degree)')
 plt.show()
@@ -107,18 +123,18 @@ timeGyro = []
 plotX = []
 plotY = []
 plotZ = []
-dt = dataGyro[1]['t'] - dataGyro[0]['t']
-for data in dataGyro:
-	plotX.append(data['x']*dt)
-	plotY.append(data['y']*dt)
-	plotZ.append(data['z']*dt)
-	timeGyro.append(data['t'])
+dt = dataGyro['t'][1] - dataGyro['t'][0]
+for i in range(len(dataGyro['t'])):
+	plotX.append(dataGyro['x'][i]*dt)
+	plotY.append(dataGyro['y'][i]*dt)
+	plotZ.append(dataGyro['z'][i]*dt)
+	#timeGyro.append(data['t'])
 
 # plot the new Integral gyroscope data
 plt.title('Plot Gyroscope Angle')
-plt.plot(timeGyro, plotX, label = 'X', linewidth=0.7)
-plt.plot(timeGyro, plotY, label = 'Y',linewidth=0.7)
-plt.plot(timeGyro, plotZ, label = 'Z',linewidth=0.7)
+plt.plot(dataGyro['t'], plotX, label = 'X', linewidth=0.7)
+plt.plot(dataGyro['t'], plotY, label = 'Y',linewidth=0.7)
+plt.plot(dataGyro['t'], plotZ, label = 'Z',linewidth=0.7)
 plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Gyroscope angle (degree)')
